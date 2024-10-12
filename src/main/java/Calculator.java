@@ -1,9 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.*;
 import java.util.Scanner;
 
 public class Calculator extends JFrame implements ActionListener, ItemListener {
@@ -22,7 +19,10 @@ public class Calculator extends JFrame implements ActionListener, ItemListener {
         setSize(800, 400);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridLayout(6, 2, 10, 10));
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
         num1Field = new JTextField();
         num2Field = new JTextField();
@@ -35,18 +35,48 @@ public class Calculator extends JFrame implements ActionListener, ItemListener {
         num2Label = new JLabel("Введите второе число: ");
         operationLabel = new JLabel("Выберите операцию: ");
 
-        add(num1Label);
-        add(num2Label);
-        add(num1Field);
-        add(num2Field);
-        add(operationLabel);
-        add(operationBox);
-        add(calculateButton);
-        add(resultLabel);
-        add(darkModeCheckBox);
+        calculateButton.setToolTipText("Нажмите, чтобы вычислить результат");
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        add(num1Label, gbc);
+        gbc.gridx = 1;
+        add(num1Field, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        add(num2Label, gbc);
+        gbc.gridx = 1;
+        add(num2Field, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        add(operationLabel, gbc);
+        gbc.gridx = 1;
+        add(operationBox, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        add(calculateButton, gbc);
+        gbc.gridx = 1;
+        add(resultLabel, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        add(darkModeCheckBox, gbc);
 
         calculateButton.addActionListener(this);
         darkModeCheckBox.addItemListener(this);
+
+        calculateButton.addMouseListener(new MouseAdapter() {
+            @Override public void mouseEntered(MouseEvent e) {
+                calculateButton.setBackground(Color.LIGHT_GRAY);
+            }
+
+            @Override public void mouseExited(MouseEvent e) {
+                calculateButton.setBackground(isDarkMode() ? Color.GRAY : Color.white);
+            }
+        });
 
         setTheme(false);
     }
@@ -69,7 +99,6 @@ public class Calculator extends JFrame implements ActionListener, ItemListener {
         resultLabel.setForeground(textColor);
         darkModeCheckBox.setForeground(textColor);
 
-        //calculateButton.setBackground(textColor);
         num1Label.setForeground(textColor);
         num2Label.setForeground(textColor);
         operationLabel.setForeground(textColor);
@@ -85,8 +114,8 @@ public class Calculator extends JFrame implements ActionListener, ItemListener {
         num2Label.setFont(font);
         operationLabel.setFont(font);
 
-        Color accentColor = isDark ? new Color(100, 149, 237) : new Color(70, 130, 180); // Cornflower Blue
-        calculateButton.setBackground(accentColor);
+//        Color accentColor = isDark ? new Color(100, 149, 237) : new Color(70, 130, 180); // Cornflower Blue
+//        calculateButton.setBackground(accentColor);
     }
 
     @Override public void actionPerformed(ActionEvent e) {
@@ -153,6 +182,10 @@ public class Calculator extends JFrame implements ActionListener, ItemListener {
             if (e.getSource() == darkModeCheckBox) {
                 setTheme(darkModeCheckBox.isSelected());
             }
+        }
+
+        private boolean isDarkMode() {
+            return darkModeCheckBox.isSelected();
         }
 
     public static void main(String[] args) {
